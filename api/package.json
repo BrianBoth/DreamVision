@@ -1,0 +1,17 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "main": "main.py",
+  "scripts": {
+    "dev": "uvicorn main:app --reload"
+  },
+  "dependencies": {
+    "requests": "*",
+    "python-dotenv": "*",
+    "gradio-client": "*"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

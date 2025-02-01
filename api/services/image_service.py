@@ -12,5 +12,5 @@ def generate_img(text):
         num_inference_steps=10, # higher steps higher accuracy
         api_name="/infer"
     )
-    print(result[0])
-    return result[0]
+    return result[0] # this is the temporary path
+

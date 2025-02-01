@@ -1,1 +1,16 @@
-# DreamVision
+CREATE TABLE users (
+userid SERIAL PRIMARY KEY,
+username TEXT UNIQUE NOT NULL,
+email TEXT UNIQUE NOT NULL,
+password TEXT NOT NULL
+);
+
+CREATE TABLE entries (
+entryid SERIAL PRIMARY KEY,
+userid INT REFERENCES users(userid) ON DELETE CASCADE,
+text TEXT NOT NULL,
+image_url TEXT,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+audio?
+sentiment?
+);

@@ -1,10 +1,22 @@
-from fastapi import FastAPI, Body
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from videoStorage import video_upload
-from videoGen import generate_img
-from pydantic import BaseModel
+from contextlib import asynccontextmanager
+from dotenv import load_dotenv
+from db.database import connect_db, disconnect_db
+from routes import video_generator, auth
+from dotenv import load_dotenv
 
-app = FastAPI()
+load_dotenv()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await connect_db()
+    print("connected to db")
+    yield
+    await disconnect_db()
+    print("disconnected from db")
+
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -14,18 +26,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class ImageRequest(BaseModel):
-    text: str
+# Include routes from the routes directory
+app.include_router(video_generator.router)
+app.include_router(auth.router)
 
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the Dream Journal API!"}
 
-@app.post("/generateimage")
-def image_route(image_request: ImageRequest = Body(...)):
-    print("inside image route")
-    text = image_request.text
-
-    img_url = generate_img(text)
-    print(img_url)
-    return {"img_url": img_url}

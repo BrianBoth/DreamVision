@@ -1,4 +1,5 @@
 from gradio_client import Client
+from services.video_storage import video_upload
 
 client = Client("black-forest-labs/FLUX.1-schnell")
 
@@ -14,3 +15,9 @@ def generate_img(text):
     )
     return result[0] # this is the temporary path
 
+def generate_path(dream_description):
+    # generates ai image
+    temp_path = generate_img(dream_description)
+    # stores generated temp path in cloudinary
+    public_url = video_upload(temp_path)
+    return {"img_url": public_url}

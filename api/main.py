@@ -1,12 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from dotenv import load_dotenv
+from api.routes import dream_generation
 from db.database import connect_db, disconnect_db
-from routes import video_generator, auth
-from dotenv import load_dotenv
+from routes import auth
 
-load_dotenv()
+pool = None
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -27,7 +26,7 @@ app.add_middleware(
 )
 
 # Include routes from the routes directory
-app.include_router(video_generator.router)
+app.include_router(dream_generation.router)
 app.include_router(auth.router)
 
 @app.get("/")

@@ -8,7 +8,7 @@ api_key = os.getenv("CLOUDINARY_KEY")
 secret = os.getenv("VIDEO_SECRET")
 
 
-def video_upload(vid_url):    
+def video_upload(vid_url, userid):    
   cloudinary.config( 
       cloud_name = cloud_name, 
       api_key = api_key,
@@ -16,16 +16,14 @@ def video_upload(vid_url):
       secure=True
   )
 
-  # Upload an image
+  # Upload an image //change userID to actual userID 
   upload_result = cloudinary.uploader.upload(vid_url,
-                                            public_id="userID")
+                                            public_id=userid)
   print(upload_result["secure_url"])
 
-  # Optimize delivery by resizing and applying auto-format and auto-quality
-  optimize_url, _ = cloudinary_url("userID", fetch_format="auto", quality="auto")
+  optimize_url, _ = cloudinary_url(userid, fetch_format="auto", quality="auto")
   print(optimize_url)
 
-  # Transform the image: auto-crop to square aspect_ratio
   auto_crop_url, _ = cloudinary_url("userID", width=500, height=500, crop="auto", gravity="auto")
   print(auto_crop_url)
   return auto_crop_url

@@ -61,7 +61,7 @@ import numpy as np
 
 # test check what type of dream it is (make a route)
 def dream_classifier(dream):
-  BEST_CHECKPOINT = "./results/checkpoint-114"
+  BEST_CHECKPOINT = "../results/checkpoint-114"
   tokenizer = AutoTokenizer.from_pretrained(BEST_CHECKPOINT)
   model = AutoModelForSequenceClassification.from_pretrained(BEST_CHECKPOINT)
 

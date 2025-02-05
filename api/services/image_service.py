@@ -1,3 +1,4 @@
+import gradio as gr
 from gradio_client import Client
 from services.video_storage import video_upload
 

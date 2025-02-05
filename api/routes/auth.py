@@ -25,6 +25,7 @@ async def user_login(user: User):
     "userid": user_data["userid"],
   })
 
+  print(user_data["token"])
   response.set_cookie(key="access_token", value=user_data["token"], httponly=True, secure=True, samesite="Lax")
   return response
 

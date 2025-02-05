@@ -1,9 +1,9 @@
 import React from "react";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
-import Landing from "../components/Landing.jsx";
-import Login from "../components/Login.jsx";
-import Signup from "../components/Signup.jsx";
-import Dashboard from "../components/Dashboard.jsx";
+import Landing from "../views/Landing.jsx";
+import Login from "../views/Login.jsx";
+import Signup from "../views/Signup.jsx";
+import Dashboard from "../views/Dashboard.jsx";
 
 const App = () => {
   return (

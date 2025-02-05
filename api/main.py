@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from api.routes import dream_generation
 from db.database import connect_db, disconnect_db
+from routes import dream_generation
 from routes import auth
 
 pool = None

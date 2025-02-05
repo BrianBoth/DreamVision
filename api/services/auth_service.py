@@ -1,6 +1,6 @@
 import jwt
 import os
-from fastapi import HTTPException
+from fastapi import HTTPException, Request
 from datetime import datetime, timedelta, timezone
 import bcrypt
 from db.database import database
@@ -18,7 +18,10 @@ def create_auth_token(username: str, email: str):
     access_token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
     return {"access_token": access_token, "token_type": "bearer"}
 
-def token_check(token: str):
+def token_check(request: Request):
+    token = request.cookies.get("access_token")
+    if not token:
+       raise HTTPException(status_code=401, detail="Token missing")
     try:
         payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         return payload

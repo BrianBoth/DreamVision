@@ -8,9 +8,9 @@ password TEXT NOT NULL
 CREATE TABLE entries (
 entryid SERIAL PRIMARY KEY,
 userid INT REFERENCES users(userid) ON DELETE CASCADE,
+title TEXT NOT NULL,
 text TEXT NOT NULL,
+sentiment TEXT NOT NULL,
 image_url TEXT,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-audio?
-sentiment?
 );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar } from "@fortawesome/free-regular-svg-icons";
@@ -6,9 +6,9 @@ import { faListUl } from "@fortawesome/free-solid-svg-icons";
 
 function Dashboard() {
   const [activetab, setActiveTab] = useState("");
+  const [activeEntries, setActiveEntries] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
   const location = useLocation();
   const userid = location.state?.userid;
   const [formData, setFormData] = useState({
@@ -17,12 +17,39 @@ function Dashboard() {
     dream_text: "",
   });
 
-  const toggleModal = () => setIsModalOpen((prev) => !prev);
+  useEffect(() => {
+    const fetchDreams = async () => {
+      try {
+        const response = await fetch(
+          `${backendUrl}/get-dreams?userid=${userid}`,
+          {
+            method: "GET",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.detail);
+        }
+        const parsedResponse = await response.json();
+        console.log(parsedResponse);
+        setActiveEntries(parsedResponse["dreams"]);
+      } catch (err) {
+        console.error("Error during login: ", err.message);
+      }
+    };
+
+    fetchDreams();
+  }, [backendUrl, userid]);
+
+  const toggleModal = () => {
+    setIsModalOpen((prev) => !prev);
+  };
 
   const renderTab = () => {};
   const handleDream = async (e) => {
     e.preventDefault();
-    console.log(formData);
     try {
       const response = await fetch(`${backendUrl}/process-dream`, {
         method: "POST",

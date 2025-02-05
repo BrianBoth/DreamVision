@@ -18,7 +18,8 @@ def generate_img(text):
 
 def generate_path(dream_description):
     # generates ai image
-    temp_path = generate_img(dream_description)
+    # temp_path = generate_img(dream_description)
+    temp_path = "https://image.shutterstock.com/image-photo/golden-retriever-running-happily-on-260nw-2549145427.jpg"
     # stores generated temp path in cloudinary
     public_url = video_upload(temp_path)
     return {"img_url": public_url}

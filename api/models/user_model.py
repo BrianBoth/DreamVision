@@ -8,3 +8,6 @@ class UserSignup(BaseModel):
   username: str
   email: str
   password: str
+
+class UserIdentifier(BaseModel):
+  userid: int

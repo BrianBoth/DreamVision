@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from db.database import connect_db, disconnect_db
 from routes import dream_generation
 from routes import auth
+from routes import display
 
 pool = None
 
@@ -28,6 +29,7 @@ app.add_middleware(
 # Include routes from the routes directory
 app.include_router(dream_generation.router)
 app.include_router(auth.router)
+app.include_router(display.router)
 
 @app.get("/")
 def read_root():

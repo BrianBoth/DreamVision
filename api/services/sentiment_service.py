@@ -4,6 +4,14 @@ from datasets import Dataset
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, TrainingArguments, Trainer
 import numpy as np
 
+# from huggingface_hub import HfApi
+# api = HfApi()
+# api.upload_folder(
+#     folder_path="/Users/brianboth/Desktop/DreamVision/results/checkpoint-114",
+#     repo_id="BDPLE/DreamClassification",
+#     repo_type="model"
+# )
+
 # load csv into proper format and preprocess
 # df = pd.read_csv("/Users/brianboth/Desktop/DreamVision/api/data/dream_dataset.csv")
 # df = df[['description', 'label']]
@@ -60,8 +68,9 @@ import numpy as np
 # print(metrics)
 
 # test check what type of dream it is (make a route)
+
 def dream_classifier(dream):
-  BEST_CHECKPOINT = "../results/checkpoint-114"
+  BEST_CHECKPOINT = "BDPLE/DreamClassification"
   tokenizer = AutoTokenizer.from_pretrained(BEST_CHECKPOINT)
   model = AutoModelForSequenceClassification.from_pretrained(BEST_CHECKPOINT)
 

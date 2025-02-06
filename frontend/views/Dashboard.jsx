@@ -3,11 +3,14 @@ import { useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar } from "@fortawesome/free-regular-svg-icons";
 import { faListUl } from "@fortawesome/free-solid-svg-icons";
+import EntryModal from "../src/components/EntryModal";
+import DreamCards from "../src/components/DreamCards";
 
 function Dashboard() {
-  const [activetab, setActiveTab] = useState("");
+  const [activetab, setActiveTab] = useState("list");
   const [activeEntries, setActiveEntries] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const location = useLocation();
   const userid = location.state?.userid;
@@ -39,7 +42,6 @@ function Dashboard() {
         console.error("Error during login: ", err.message);
       }
     };
-
     fetchDreams();
   }, [backendUrl, userid]);
 
@@ -50,6 +52,8 @@ function Dashboard() {
   const renderTab = () => {};
   const handleDream = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    toggleModal();
     try {
       const response = await fetch(`${backendUrl}/process-dream`, {
         method: "POST",
@@ -65,26 +69,40 @@ function Dashboard() {
       console.log(parsedResponse);
     } catch (err) {
       console.error("Error during Dream Generation: ", err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div
-      className="h-screen flex flex-col bg-gradient-to-b from-blue-600 to-[#d8eeef] text-[#0B1E33] bg-cover bg-no-repeat relative"
+      className="h-screen flex flex-col bg-gradient-to-b from-blue-600 to-[#d8eeef] text-[#0B1E33] bg-cover bg-no-repeat relative pb-20"
       style={{
         backgroundPosition: "center",
         backgroundSize: "cover",
         fontFamily: "Bubblegum Sans, sans-serif",
       }}
     >
+      {loading && (
+        <div className="fixed inset-0 bg-[#00c6ff] bg-opacity-50 flex items-center justify-center z-50">
+          <img src="/loadcloud.gif" alt="Loading..." className="w-96 h-96" />
+        </div>
+      )}
+      {activeEntries.value == "list" && <div></div>}
       {/* Main Content */}
-      <div className={`flex-grow pb-16 ${isModalOpen ? "blur-sm" : ""}`}></div>
+      <div className={`flex-grow ${isModalOpen ? "blur-sm" : ""}`}></div>
+      {activetab == "list" && <DreamCards dreams={activeEntries} />}
 
       {/* Footer */}
       <footer className="w-full h-20 bg-[#fdfcfc] fixed bottom-0 left-0 border-t border-[#3F3F3F]">
         <div className="max-w-screen-xl mx-auto h-full flex justify-between items-center px-8 relative">
           {/* Calendar Button */}
-          <button className="flex items-center justify-center w-14 h-14 hover:bg-gray-200 rounded-full transition-all duration-300 hover:ring-2 hover:ring-[#5d5d5d] focus:ring focus:ring-[#E0E0E0]">
+          <button
+            className={`flex items-center justify-center w-14 h-14 ${
+              activetab == "calendar" ? "bg-gray-200" : ""
+            } rounded-full transition-all duration-300 hover:ring-2 hover:ring-[#5d5d5d] focus:ring focus:ring-[#E0E0E0] cursor-pointer`}
+            onClick={() => setActiveTab("calendar")}
+          >
             <FontAwesomeIcon icon={faCalendar} className="text-xl text-black" />
           </button>
 
@@ -99,69 +117,24 @@ function Dashboard() {
           </div>
 
           {/* List View Button */}
-          <button className="flex items-center justify-center w-14 h-14 hover:bg-gray-200 rounded-full transition-all duration-300 hover:ring-2 hover:ring-[#5d5d5d] focus:ring focus:ring-[#E0E0E0]">
+          <button
+            className={`flex items-center justify-center w-14 h-14 ${
+              activetab == "list" ? "bg-gray-200" : ""
+            } rounded-full transition-all duration-300 hover:ring-2 hover:ring-[#5d5d5d] focus:ring focus:ring-[#E0E0E0] cursor-pointer`}
+            onClick={() => setActiveTab("list")}
+          >
             <FontAwesomeIcon icon={faListUl} className="text-xl text-black" />
           </button>
         </div>
       </footer>
 
       {isModalOpen && (
-        <form onSubmit={handleDream}>
-          <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-lg bg-black/30">
-            <div className="bg-white p-8 rounded-xl shadow-2xl max-w-2xl w-full relative mx-4">
-              <button
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer text-2xl p-1 hover:bg-gray-100 rounded-full"
-                onClick={toggleModal}
-              >
-                ✕
-              </button>
-
-              <h2 className="text-3xl font-bold text-blue-600 mb-6">
-                New Dream Entry
-              </h2>
-
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-gray-700 text-lg font-semibold mb-2">
-                    Title
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-700 outline-none rounded-lg px-4 py-3 transition-all"
-                    placeholder="Enter dream title..."
-                    value={formData.dream_title}
-                    onChange={(e) =>
-                      setFormData({ ...formData, dream_title: e.target.value })
-                    }
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-gray-700 text-lg font-semibold mb-2">
-                    Dream Description
-                  </label>
-                  <textarea
-                    className="w-full border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-700 outline-none rounded-lg px-4 py-3 h-48 resize-y transition-all"
-                    placeholder="Describe your dream in detail..."
-                    value={formData.dream_text}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        dream_text: e.target.value,
-                      })
-                    }
-                  ></textarea>
-                </div>
-              </div>
-
-              <div className="mt-8 flex justify-end space-x-4">
-                <button className="cursor-pointer w-full px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold shadow-md hover:shadow-lg">
-                  Save Dream
-                </button>
-              </div>
-            </div>
-          </div>
-        </form>
+        <EntryModal
+          handleDream={handleDream}
+          toggleModal={toggleModal}
+          formData={formData}
+          setFormData={setFormData}
+        />
       )}
     </div>
   );

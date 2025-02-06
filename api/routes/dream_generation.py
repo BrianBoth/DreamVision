@@ -11,7 +11,8 @@ router = APIRouter()
 @router.post("/process-dream", response_model=Dream)
 async def dream_services(dream: Dream = Body(...), user: dict = Depends(token_check)):
     print(dream.dream_title, dream.dream_text, dream.userid)
-    image_url = generate_img(dream.dream_text)
+    # image_url = generate_img(dream.dream_text)
+    image_url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFUAfyVe3Easiycyh3isP9wDQTYuSmGPsPQvLIJdEYvQ_DsFq5Ez2Nh_QjiS3oZ3B8ZPfK9cZQyIStmQMV1lDPLw"
     perm_url = video_upload(image_url, dream.userid)
     sentiment = dream_classifier(dream.dream_text)
     if sentiment == 0:

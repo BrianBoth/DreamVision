@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 
-function DreamCards({ dreams }) {
+function DreamCards({ dreams, setIsCardOpen, fetchDream }) {
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -10,13 +10,17 @@ function DreamCards({ dreams }) {
   }, [dreams]);
   return (
     <div className="overflow-y-auto" ref={containerRef}>
-      <div className="grid gap-4 p-4 md:grid-cols-4 sm:grid-cols-1">
+      <div className="grid gap-8 p-4 md:grid-cols-4 sm:grid-cols-1">
         {dreams.map((dream) => {
           const formattedDate = new Date(dream.created_at).toLocaleDateString();
           return (
             <div
-              key={dream.id}
+              key={dream.entryid}
               className="relative card border rounded-lg shadow overflow-hidden cursor-pointer"
+              onClick={async () => {
+                await fetchDream(dream.entryid);
+                setIsCardOpen(true);
+              }}
             >
               <img
                 src={dream.image_url}
